@@ -1,0 +1,21 @@
+[project]
+name = "membership-management"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "alembic>=1.16.5",
+    "asyncpg>=0.30.0",
+    "dependency-injector>=4.48.2",
+    "fastapi[standard]>=0.118.2",
+    "pydantic-settings>=2.11.0",
+    "sqlalchemy[asyncio]>=2.0.43",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.9.0",
+    "pre-commit>=4.3.0",
+    "ruff>=0.14.0",
+]
