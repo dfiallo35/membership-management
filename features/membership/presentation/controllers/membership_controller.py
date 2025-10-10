@@ -11,7 +11,8 @@ class MembershipController:
 
     async def get_daily_membership(self): ...
 
-    async def get_membership_by_id(self): ...
+    async def get_membership_by_id(self, membership_id: str) -> MembershipResponse:
+        return await self.service.get_membership_by_id(membership_id)
 
     async def get_memberships(self) -> list[MembershipResponse]:
         return await self.service.list_memberships()

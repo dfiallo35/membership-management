@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi import status
 
 from features.membership.application.dtos.membership_dtos import MembershipResponse
 from features.membership.presentation.controllers.membership_controller import (
@@ -9,7 +10,11 @@ from features.membership.presentation.controllers.membership_controller import (
 router = APIRouter(prefix="/memberships", tags=["Memberships"])
 
 
-@router.post("/")
+@router.post(
+    "/",
+    response_model=None,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_membership():
     controller = MembershipController()
     return await controller.create_membership()
@@ -19,14 +24,20 @@ async def create_membership():
 async def get_daily_membership(): ...
 
 
-@router.get("/{id_membership}")
-async def get_membership_by_id(id_membership: str): ...
+@router.get(
+    "/{id_membership}",
+    response_model=MembershipResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def get_membership_by_id(id_membership: str):
+    controller = MembershipController()
+    return await controller.get_membership_by_id(id_membership)
 
 
 @router.get(
     "/",
     response_model=list[MembershipResponse],
-    status_code=200,
+    status_code=status.HTTP_200_OK,
 )
 async def get_memberships():
     controller = MembershipController()

@@ -11,6 +11,9 @@ from features.membership.application.dtos.membership_dtos import MembershipRespo
 from features.membership.application.use_cases.create_membership import (
     CreateMembershipUseCase,
 )
+from features.membership.application.use_cases.get_membership import (
+    GetMembershipsUseCase,
+)
 from features.membership.application.use_cases.list_membership import (
     ListMembershipsUseCase,
 )
@@ -35,3 +38,9 @@ class MembershipService:
     async def list_memberships(self) -> list[MembershipResponse]:
         memberships = await ListMembershipsUseCase(self.membership_repository).execute()
         return [self.mapper.to_response(membership) for membership in memberships]
+
+    async def get_membership_by_id(self, membership_id: str) -> MembershipResponse:
+        membership = await GetMembershipsUseCase(self.membership_repository).execute(
+            membership_id
+        )
+        return self.mapper.to_response(membership)
