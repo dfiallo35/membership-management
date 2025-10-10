@@ -17,7 +17,7 @@
 
             },
             "args": [
-                "dev",
+                "dev", "--port", "8080"
             ],
             "jinja": true,
             "justMyCode": false,

@@ -1,11 +1,17 @@
 from fastapi import APIRouter
 
+from features.membership.presentation.controllers.membership_controller import (
+    MembershipController,
+)
+
 
 router = APIRouter(prefix="/memberships", tags=["Memberships"])
 
 
 @router.post("/")
-async def create_membership(): ...
+async def create_membership():
+    controller = MembershipController()
+    return await controller.create_membership()
 
 
 @router.get("/daily")

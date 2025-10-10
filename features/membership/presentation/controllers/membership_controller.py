@@ -1,13 +1,12 @@
-# TODO: Implement the MembershipController class
-class MembershipService:
-    pass
+from features.membership.application.service import MembershipService
 
 
 class MembershipController:
-    def __init__(self, service: MembershipService):
-        self.service = service
+    def __init__(self):
+        self.service = MembershipService()
 
-    async def create_membership(self): ...
+    async def create_membership(self):
+        return await self.service.create_membership()
 
     async def get_daily_membership(self): ...
 
