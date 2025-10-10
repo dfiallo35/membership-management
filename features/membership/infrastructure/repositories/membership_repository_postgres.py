@@ -11,7 +11,6 @@ from features.membership.infrastructure.mappers.membership_mappers import (
 )
 from features.membership.infrastructure.database.postgres import DbConnection
 from features.membership.infrastructure.entities.membership_model import MembershipModel
-from features.membership.infrastructure.entities.membership_model import GymModel
 
 
 class MembershipRepositoryPostgres(IMembershipRepository):
@@ -38,22 +37,13 @@ class MembershipRepositoryPostgres(IMembershipRepository):
 
         return query
 
-    async def save(self):
+    async def save(self, membership: Membership):
         async with self.db_connection.get_session() as session:
-            query = select(GymModel).where(GymModel.name == "Gym Test")
-            gym = await session.execute(query)
-            gym = gym.scalars().first()
-
-            membership = MembershipModel(
-                name="Membership Test",
-                description="Description Test",
-                duration_days=1,
-                price=10,
-                is_active=True,
-                gym_id=gym.id,
-            )
-            session.add(membership)
+            membership_model = self.mapper.to_model(membership)
+            session.add(membership_model)
             await session.commit()
+            await session.refresh(membership_model)
+            return self.mapper.to_domain(membership_model)
 
     async def list(self, filters: MembershipFilters) -> list[Membership]:
         async with self.db_connection.get_session() as session:

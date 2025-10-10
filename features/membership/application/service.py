@@ -7,7 +7,10 @@ from features.membership.domain.repository_interfaces.membership_repository impo
     IMembershipRepository,
 )
 
-from features.membership.application.dtos.membership_dtos import MembershipResponse
+from features.membership.application.dtos.membership_dtos import (
+    MembershipCreateRequest,
+    MembershipResponse,
+)
 from features.membership.application.use_cases.create_membership import (
     CreateMembershipUseCase,
 )
@@ -32,8 +35,14 @@ class MembershipService:
     ):
         self.membership_repository = membership_repository
 
-    async def create_membership(self):
-        return await CreateMembershipUseCase(self.membership_repository).execute()
+    async def create_membership(
+        self, membership: MembershipCreateRequest
+    ) -> MembershipResponse:
+        membership_entity = self.mapper.to_domain(membership)
+        membership_response = await CreateMembershipUseCase(
+            self.membership_repository
+        ).execute(membership_entity)
+        return self.mapper.to_response(membership_response)
 
     async def list_memberships(self) -> list[MembershipResponse]:
         memberships = await ListMembershipsUseCase(self.membership_repository).execute()
