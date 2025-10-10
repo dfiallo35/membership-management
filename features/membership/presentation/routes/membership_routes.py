@@ -4,6 +4,7 @@ from fastapi import status
 from features.membership.application.dtos.membership_dtos import (
     MembershipCreateRequest,
     MembershipResponse,
+    MembershipUpdateRequest,
 )
 from features.membership.presentation.controllers.membership_controller import (
     MembershipController,
@@ -47,8 +48,16 @@ async def get_memberships():
     return await controller.get_memberships()
 
 
-@router.put("/{id_membership}")
-async def update_membership(): ...
+@router.put(
+    "/{id_membership}",
+    response_model=MembershipResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def update_membership(
+    membership_update: MembershipUpdateRequest, id_membership: str
+):
+    controller = MembershipController()
+    return await controller.update_membership(id_membership, membership_update)
 
 
 @router.delete("/{id_membership}")

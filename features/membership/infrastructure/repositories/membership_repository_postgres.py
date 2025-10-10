@@ -58,5 +58,14 @@ class MembershipRepositoryPostgres(IMembershipRepository):
     async def delete(self):
         pass
 
-    async def update(self):
-        pass
+    async def update(self, membership_id: str, update_request: dict) -> Membership:
+        async with self.db_connection.get_session() as session:
+            membership_model = await session.get(MembershipModel, membership_id)
+            if not membership_model:
+                raise ValueError(f"Membership with id {membership_id} not found")
+
+            for key, value in update_request.items():
+                setattr(membership_model, key, value)
+            await session.commit()
+            await session.refresh(membership_model)
+            return self.mapper.to_domain(membership_model)
