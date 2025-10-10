@@ -1,6 +1,9 @@
 from abc import ABC
 from abc import abstractmethod
 
+from features.membership.domain.entities.membership import Membership
+from features.membership.domain.filters.membership_filters import MembershipFilters
+
 
 class IMembershipRepository(ABC):
     @abstractmethod
@@ -8,7 +11,7 @@ class IMembershipRepository(ABC):
         pass
 
     @abstractmethod
-    async def find(self) -> None:
+    async def list(self, filters: MembershipFilters) -> list[Membership]:
         pass
 
     @abstractmethod

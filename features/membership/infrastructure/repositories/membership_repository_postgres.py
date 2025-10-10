@@ -1,6 +1,8 @@
 from sqlalchemy import select
+from sqlalchemy.sql import Select
 
 from features.membership.domain.entities.membership import Membership
+from features.membership.domain.filters.membership_filters import MembershipFilters
 from features.membership.domain.repository_interfaces.membership_repository import (
     IMembershipRepository,
 )
@@ -17,6 +19,24 @@ class MembershipRepositoryPostgres(IMembershipRepository):
 
     def __init__(self, db_connection: DbConnection):
         self.db_connection = db_connection
+
+    async def filter(self, filters: MembershipFilters, query: Select) -> Select:
+        if filters.id_eq:
+            query = query.where(MembershipModel.id == filters.id_eq)
+        if filters.limit:
+            query = query.limit(filters.limit)
+        if filters.offset:
+            query = query.offset(filters.offset)
+        if filters.order_by:
+            order_by = filters.order_by
+            desc = order_by.startswith("-")
+            order_by = order_by.lstrip("-")
+
+            column = getattr(MembershipModel, order_by, None)
+            if column:
+                query = query.order_by(column.desc() if desc else column)
+
+        return query
 
     async def save(self):
         async with self.db_connection.get_session() as session:
@@ -35,9 +55,10 @@ class MembershipRepositoryPostgres(IMembershipRepository):
             session.add(membership)
             await session.commit()
 
-    async def find(self) -> list[Membership]:
+    async def list(self, filters: MembershipFilters) -> list[Membership]:
         async with self.db_connection.get_session() as session:
             query = select(MembershipModel)
+            query = await self.filter(filters, query)
             memberships = await session.execute(query)
             return [
                 self.mapper.to_domain(membership)
