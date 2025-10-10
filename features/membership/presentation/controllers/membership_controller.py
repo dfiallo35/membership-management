@@ -1,4 +1,5 @@
 from features.membership.application.service import MembershipService
+from features.membership.application.dtos.membership_dtos import MembershipResponse
 
 
 class MembershipController:
@@ -12,7 +13,8 @@ class MembershipController:
 
     async def get_membership_by_id(self): ...
 
-    async def get_memberships(self): ...
+    async def get_memberships(self) -> list[MembershipResponse]:
+        return await self.service.list_memberships()
 
     async def update_membership(self): ...
 

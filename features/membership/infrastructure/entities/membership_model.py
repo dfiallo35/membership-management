@@ -50,7 +50,7 @@ class MembershipModel(BaseModel):
     duration_days: Mapped[int] = mapped_column(Integer, nullable=False)
     price: Mapped[float] = mapped_column(Float, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False)
-    id_gym: Mapped[UUID] = mapped_column(
+    gym_id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("gym.id"), nullable=False
     )
 
