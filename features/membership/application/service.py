@@ -15,8 +15,11 @@ from features.membership.application.dtos.membership_dtos import (
 from features.membership.application.use_cases.create_membership import (
     CreateMembershipUseCase,
 )
+from features.membership.application.use_cases.delete_membership import (
+    DeleteMembershipUseCase,
+)
 from features.membership.application.use_cases.get_membership import (
-    GetMembershipsUseCase,
+    GetMembershipUseCase,
 )
 from features.membership.application.use_cases.list_membership import (
     ListMembershipsUseCase,
@@ -53,7 +56,7 @@ class MembershipService:
         return [self.mapper.to_response(membership) for membership in memberships]
 
     async def get_membership_by_id(self, membership_id: str) -> MembershipResponse:
-        membership = await GetMembershipsUseCase(self.membership_repository).execute(
+        membership = await GetMembershipUseCase(self.membership_repository).execute(
             membership_id
         )
         return self.mapper.to_response(membership)
@@ -67,3 +70,8 @@ class MembershipService:
             self.membership_repository
         ).execute(membership_id, membership_update_dict)
         return self.mapper.to_response(membership_response)
+
+    async def delete_membership(self, membership_id: str) -> None:
+        return await DeleteMembershipUseCase(self.membership_repository).execute(
+            membership_id
+        )

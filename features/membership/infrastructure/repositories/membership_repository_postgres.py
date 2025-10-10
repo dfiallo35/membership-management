@@ -55,8 +55,13 @@ class MembershipRepositoryPostgres(IMembershipRepository):
                 for membership in memberships.scalars().all()
             ]
 
-    async def delete(self):
-        pass
+    async def delete(self, membership_id: str) -> None:
+        async with self.db_connection.get_session() as session:
+            membership_model = await session.get(MembershipModel, membership_id)
+            if not membership_model:
+                raise ValueError(f"Membership with id {membership_id} not found")
+            await session.delete(membership_model)
+            await session.commit()
 
     async def update(self, membership_id: str, update_request: dict) -> Membership:
         async with self.db_connection.get_session() as session:

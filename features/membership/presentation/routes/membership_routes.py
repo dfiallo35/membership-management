@@ -60,5 +60,11 @@ async def update_membership(
     return await controller.update_membership(id_membership, membership_update)
 
 
-@router.delete("/{id_membership}")
-async def delete_membership(): ...
+@router.delete(
+    "/{id_membership}",
+    response_model=None,
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_membership(id_membership: str):
+    controller = MembershipController()
+    return await controller.delete_membership(id_membership)

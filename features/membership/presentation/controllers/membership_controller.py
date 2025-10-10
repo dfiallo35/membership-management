@@ -28,4 +28,5 @@ class MembershipController:
     ) -> MembershipResponse:
         return await self.service.update_membership(membership_id, membership_update)
 
-    async def delete_membership(self): ...
+    async def delete_membership(self, membership_id: str) -> None:
+        return await self.service.delete_membership(membership_id)
