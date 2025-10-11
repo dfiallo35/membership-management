@@ -9,5 +9,5 @@ class ListMembershipsUseCase:
     def __init__(self, repository: IMembershipRepository):
         self.repository = repository
 
-    async def execute(self) -> list[Membership]:
-        return await self.repository.list(filters=MembershipFilters())
+    async def execute(self, filters: MembershipFilters) -> list[Membership]:
+        return await self.repository.list(filters=filters)

@@ -24,8 +24,14 @@ async def create_membership(membership: MembershipCreateRequest):
     return await controller.create_membership(membership)
 
 
-@router.get("/daily")
-async def get_daily_membership(): ...
+@router.get(
+    "/daily",
+    response_model=MembershipResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def get_daily_membership():
+    controller = MembershipController()
+    return await controller.get_daily_membership()
 
 
 @router.get(

@@ -22,6 +22,11 @@ class MembershipRepositoryPostgres(IMembershipRepository):
     async def filter(self, filters: MembershipFilters, query: Select) -> Select:
         if filters.id_eq:
             query = query.where(MembershipModel.id == filters.id_eq)
+        if filters.duration_days_eq:
+            query = query.where(
+                MembershipModel.duration_days == filters.duration_days_eq
+            )
+
         if filters.limit:
             query = query.limit(filters.limit)
         if filters.offset:

@@ -1,12 +1,11 @@
 from dependency_injector.wiring import inject
 from dependency_injector.wiring import Provide
 
-
 from features.membership.settings import Container
+from features.membership.domain.filters.membership_filters import MembershipFilters
 from features.membership.domain.repository_interfaces.membership_repository import (
     IMembershipRepository,
 )
-
 from features.membership.application.dtos.membership_dtos import (
     MembershipCreateRequest,
     MembershipResponse,
@@ -52,7 +51,9 @@ class MembershipService:
         return self.mapper.to_response(membership_response)
 
     async def list_memberships(self) -> list[MembershipResponse]:
-        memberships = await ListMembershipsUseCase(self.membership_repository).execute()
+        memberships = await ListMembershipsUseCase(self.membership_repository).execute(
+            filters=MembershipFilters()
+        )
         return [self.mapper.to_response(membership) for membership in memberships]
 
     async def get_membership_by_id(self, membership_id: str) -> MembershipResponse:
@@ -75,3 +76,11 @@ class MembershipService:
         return await DeleteMembershipUseCase(self.membership_repository).execute(
             membership_id
         )
+
+    async def get_daily_membership(self) -> MembershipResponse | None:
+        memberships = await ListMembershipsUseCase(self.membership_repository).execute(
+            filters=MembershipFilters(duration_days_eq=1)
+        )
+        if not memberships:
+            return None
+        return self.mapper.to_response(memberships[0])

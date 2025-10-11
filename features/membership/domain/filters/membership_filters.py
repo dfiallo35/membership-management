@@ -7,6 +7,7 @@ class MembershipFilters(BaseModel):
     order_by: str | None = None
 
     id_eq: str | None = None
+    duration_days_eq: int | None = None
 
     @property
     def offset(self) -> int | None:
