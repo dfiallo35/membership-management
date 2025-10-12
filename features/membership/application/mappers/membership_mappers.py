@@ -3,14 +3,14 @@ from uuid import uuid4
 from features.membership.domain.entities.membership import Membership
 from features.membership.application.dtos.membership_dtos import (
     MembershipCreateRequest,
-    MembershipResponse,
+    MembershipPublic,
 )
 
 
 class MembershipMapper:
     @staticmethod
-    def to_response(membership: Membership) -> MembershipResponse:
-        return MembershipResponse(
+    def to_response(membership: Membership) -> MembershipPublic:
+        return MembershipPublic(
             id=str(membership.id),
             name=membership.name,
             description=membership.description,

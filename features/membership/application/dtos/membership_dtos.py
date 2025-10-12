@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class MembershipResponse(BaseModel):
+class MembershipPublic(BaseModel):
     id: str
     name: str
     description: str

@@ -3,7 +3,7 @@ from fastapi import status
 
 from features.membership.application.dtos.membership_dtos import (
     MembershipCreateRequest,
-    MembershipResponse,
+    MembershipPublic,
     MembershipUpdateRequest,
 )
 from features.membership.presentation.controllers.membership_controller import (
@@ -26,7 +26,7 @@ async def create_membership(membership: MembershipCreateRequest):
 
 @router.get(
     "/daily",
-    response_model=MembershipResponse,
+    response_model=MembershipPublic,
     status_code=status.HTTP_200_OK,
 )
 async def get_daily_membership():
@@ -36,7 +36,7 @@ async def get_daily_membership():
 
 @router.get(
     "/{id_membership}",
-    response_model=MembershipResponse,
+    response_model=MembershipPublic,
     status_code=status.HTTP_200_OK,
 )
 async def get_membership_by_id(id_membership: str):
@@ -46,7 +46,7 @@ async def get_membership_by_id(id_membership: str):
 
 @router.get(
     "/",
-    response_model=list[MembershipResponse],
+    response_model=list[MembershipPublic],
     status_code=status.HTTP_200_OK,
 )
 async def get_memberships():
@@ -56,7 +56,7 @@ async def get_memberships():
 
 @router.put(
     "/{id_membership}",
-    response_model=MembershipResponse,
+    response_model=MembershipPublic,
     status_code=status.HTTP_200_OK,
 )
 async def update_membership(
