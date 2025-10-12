@@ -10,3 +10,7 @@ class Membership(BaseModel):
     price: float
     is_active: bool
     gym_id: UUID
+
+    @property
+    def is_daily(self) -> bool:
+        return self.duration_days == 1

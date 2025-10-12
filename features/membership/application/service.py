@@ -65,11 +65,9 @@ class MembershipService:
     async def update_membership(
         self, membership_id: str, membership_update: MembershipUpdateRequest
     ) -> MembershipPublic:
-        # TODO: check
-        membership_update_dict = membership_update.model_dump(exclude_unset=True)
         membership_response = await UpdateMembershipUseCase(
             self.membership_repository
-        ).execute(membership_id, membership_update_dict)
+        ).execute(membership_id, membership_update)
         return self.mapper.to_response(membership_response)
 
     async def delete_membership(self, membership_id: str) -> None:

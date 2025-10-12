@@ -8,6 +8,9 @@ class MembershipFilters(BaseModel):
 
     id_eq: str | None = None
     duration_days_eq: int | None = None
+    gym_id_eq: str | None = None
+    name_eq: str | None = None
+    is_active: bool | None = None
 
     @property
     def offset(self) -> int | None:

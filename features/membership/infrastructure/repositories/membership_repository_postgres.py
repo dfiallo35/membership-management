@@ -20,12 +20,18 @@ class MembershipRepositoryPostgres(IMembershipRepository):
         self.db_connection = db_connection
 
     async def filter(self, filters: MembershipFilters, query: Select) -> Select:
-        if filters.id_eq:
+        if filters.id_eq is not None:
             query = query.where(MembershipModel.id == filters.id_eq)
-        if filters.duration_days_eq:
+        if filters.duration_days_eq is not None:
             query = query.where(
                 MembershipModel.duration_days == filters.duration_days_eq
             )
+        if filters.gym_id_eq is not None:
+            query = query.where(MembershipModel.gym_id == filters.gym_id_eq)
+        if filters.name_eq is not None:
+            query = query.where(MembershipModel.name == filters.name_eq)
+        if filters.is_active is not None:
+            query = query.where(MembershipModel.is_active == filters.is_active)
 
         if filters.limit:
             query = query.limit(filters.limit)
@@ -60,19 +66,19 @@ class MembershipRepositoryPostgres(IMembershipRepository):
                 for membership in memberships.scalars().all()
             ]
 
-    async def delete(self, membership_id: str) -> None:
+    async def delete(self, membership: Membership) -> None:
         async with self.db_connection.get_session() as session:
-            membership_model = await session.get(MembershipModel, membership_id)
+            membership_model = await session.get(MembershipModel, membership.id)
             if not membership_model:
-                raise ValueError(f"Membership with id {membership_id} not found")
+                raise ValueError(f"Membership with id {membership.id} not found")
             await session.delete(membership_model)
             await session.commit()
 
-    async def update(self, membership_id: str, update_request: dict) -> Membership:
+    async def update(self, membership: Membership, update_request: dict) -> Membership:
         async with self.db_connection.get_session() as session:
-            membership_model = await session.get(MembershipModel, membership_id)
+            membership_model = await session.get(MembershipModel, membership.id)
             if not membership_model:
-                raise ValueError(f"Membership with id {membership_id} not found")
+                raise ValueError(f"Membership with id {membership.id} not found")
 
             for key, value in update_request.items():
                 setattr(membership_model, key, value)
