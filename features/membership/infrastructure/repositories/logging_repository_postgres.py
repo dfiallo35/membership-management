@@ -44,7 +44,7 @@ class LoggingRepositoryPostgres(ILoggingRepository):
     ) -> None:
         await self._log(
             operation_id=LoggingOperationsEnum.ADDITION.value,
-            module_id=module_id.value,
+            module_id=module_id,
             gym_id=gym_id,
             before_state=before_state,
             after_state=after_state,
@@ -61,7 +61,7 @@ class LoggingRepositoryPostgres(ILoggingRepository):
     ) -> None:
         await self._log(
             operation_id=LoggingOperationsEnum.EDITION.value,
-            module_id=module_id.value,
+            module_id=module_id,
             gym_id=gym_id,
             before_state=before_state,
             after_state=after_state,
@@ -78,7 +78,7 @@ class LoggingRepositoryPostgres(ILoggingRepository):
     ) -> None:
         await self._log(
             operation_id=LoggingOperationsEnum.DELETION.value,
-            module_id=module_id.value,
+            module_id=module_id,
             gym_id=gym_id,
             before_state=before_state,
             after_state=after_state,

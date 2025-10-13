@@ -11,19 +11,19 @@ class MembershipMapper:
     @staticmethod
     def to_response(membership: Membership) -> MembershipPublic:
         return MembershipPublic(
-            id=str(membership.id),
+            id=membership.id,
             name=membership.name,
             description=membership.description,
             duration_days=membership.duration_days,
             price=membership.price,
             is_active=membership.is_active,
-            gym_id=str(membership.gym_id),
+            gym_id=membership.gym_id,
         )
 
     @staticmethod
     def to_domain(membership: MembershipCreateRequest) -> Membership:
         return Membership(
-            id=uuid4(),
+            id=str(uuid4()),
             name=membership.name,
             description=membership.description,
             duration_days=membership.duration_days,

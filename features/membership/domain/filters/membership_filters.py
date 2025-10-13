@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from pydantic import field_validator
 
 
 class MembershipFilters(BaseModel):
@@ -21,3 +22,7 @@ class MembershipFilters(BaseModel):
     @property
     def limit(self) -> int | None:
         return self.size if self.size is not None else None
+
+    @field_validator("id_eq", "gym_id_eq", mode="before")
+    def field_id_to_str(cls, data: any) -> str | None:
+        return str(data) if data is not None else None
