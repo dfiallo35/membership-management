@@ -6,6 +6,9 @@ from features.membership.domain.filters.membership_filters import MembershipFilt
 from features.membership.domain.repository_interfaces.membership_repository import (
     IMembershipRepository,
 )
+from features.membership.domain.repository_interfaces.logging_repository import (
+    ILoggingRepository,
+)
 from features.membership.application.dtos.membership_dtos import (
     MembershipCreateRequest,
     MembershipPublic,
@@ -38,15 +41,17 @@ class MembershipService:
         membership_repository: IMembershipRepository = Provide[
             Container.membership_repository
         ],
+        logging_repository: ILoggingRepository = Provide[Container.logging_repository],
     ):
         self.membership_repository = membership_repository
+        self.logging_repository = logging_repository
 
     async def create_membership(
         self, membership: MembershipCreateRequest
     ) -> MembershipPublic:
         membership_entity = self.mapper.to_domain(membership)
         membership_response = await CreateMembershipUseCase(
-            self.membership_repository
+            self.membership_repository, self.logging_repository
         ).execute(membership_entity)
         return self.mapper.to_response(membership_response)
 
@@ -66,14 +71,14 @@ class MembershipService:
         self, membership_id: str, membership_update: MembershipUpdateRequest
     ) -> MembershipPublic:
         membership_response = await UpdateMembershipUseCase(
-            self.membership_repository
+            self.membership_repository, self.logging_repository
         ).execute(membership_id, membership_update)
         return self.mapper.to_response(membership_response)
 
     async def delete_membership(self, membership_id: str) -> None:
-        return await DeleteMembershipUseCase(self.membership_repository).execute(
-            membership_id
-        )
+        return await DeleteMembershipUseCase(
+            self.membership_repository, self.logging_repository
+        ).execute(membership_id)
 
     async def get_daily_membership(self) -> MembershipPublic | None:
         memberships = await ListMembershipsUseCase(self.membership_repository).execute(

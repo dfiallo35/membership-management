@@ -7,7 +7,8 @@ import asyncio
 
 from alembic import context
 
-from features.membership.infrastructure.entities.membership_model import BaseModel
+from features.membership.infrastructure.entities.base_model import BaseModel
+from features.membership.infrastructure.entities.tables import TABLES
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -27,6 +28,7 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = BaseModel.metadata
+tables = TABLES
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
