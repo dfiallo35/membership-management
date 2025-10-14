@@ -47,7 +47,7 @@ async def handle_exception(request, error: BaseException):
     return JSONResponse(
         status_code=error.status_code,
         content=ErrorResponse(
-            status_code=error.status.value,
+            status_code=error.status_code,
             message=error.message,
         ).model_dump(),
     )
