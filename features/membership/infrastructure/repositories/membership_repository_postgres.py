@@ -49,39 +49,51 @@ class MembershipRepositoryPostgres(IMembershipRepository):
         return query
 
     async def save(self, membership: Membership):
-        async with self.db_connection.get_session() as session:
-            membership_model = self.mapper.to_model(membership)
-            session.add(membership_model)
-            await session.commit()
-            await session.refresh(membership_model)
-            return self.mapper.to_domain(membership_model)
+        try:
+            async with self.db_connection.get_session() as session:
+                membership_model = self.mapper.to_model(membership)
+                session.add(membership_model)
+                await session.commit()
+                await session.refresh(membership_model)
+                return self.mapper.to_domain(membership_model)
+        except Exception as e:
+            raise e
 
     async def list(self, filters: MembershipFilters) -> list[Membership]:
-        async with self.db_connection.get_session() as session:
-            query = select(MembershipModel)
-            query = await self.filter(filters, query)
-            memberships = await session.execute(query)
-            return [
-                self.mapper.to_domain(membership)
-                for membership in memberships.scalars().all()
-            ]
+        try:
+            async with self.db_connection.get_session() as session:
+                query = select(MembershipModel)
+                query = await self.filter(filters, query)
+                memberships = await session.execute(query)
+                return [
+                    self.mapper.to_domain(membership)
+                    for membership in memberships.scalars().all()
+                ]
+        except Exception as e:
+            raise e
 
     async def delete(self, membership: Membership) -> None:
-        async with self.db_connection.get_session() as session:
-            membership_model = await session.get(MembershipModel, membership.id)
-            if not membership_model:
-                raise ValueError(f"Membership with id {membership.id} not found")
-            await session.delete(membership_model)
-            await session.commit()
+        try:
+            async with self.db_connection.get_session() as session:
+                membership_model = await session.get(MembershipModel, membership.id)
+                if not membership_model:
+                    raise ValueError(f"Membership with id {membership.id} not found")
+                await session.delete(membership_model)
+                await session.commit()
+        except Exception as e:
+            raise e
 
     async def update(self, membership: Membership, update_request: dict) -> Membership:
-        async with self.db_connection.get_session() as session:
-            membership_model = await session.get(MembershipModel, membership.id)
-            if not membership_model:
-                raise ValueError(f"Membership with id {membership.id} not found")
+        try:
+            async with self.db_connection.get_session() as session:
+                membership_model = await session.get(MembershipModel, membership.id)
+                if not membership_model:
+                    raise ValueError(f"Membership with id {membership.id} not found")
 
-            for key, value in update_request.items():
-                setattr(membership_model, key, value)
-            await session.commit()
-            await session.refresh(membership_model)
-            return self.mapper.to_domain(membership_model)
+                for key, value in update_request.items():
+                    setattr(membership_model, key, value)
+                await session.commit()
+                await session.refresh(membership_model)
+                return self.mapper.to_domain(membership_model)
+        except Exception as e:
+            raise e

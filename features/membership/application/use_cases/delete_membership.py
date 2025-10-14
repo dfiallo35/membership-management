@@ -7,6 +7,10 @@ from features.membership.domain.repository_interfaces.logging_repository import 
 )
 from features.membership.domain.entities.membership import Membership
 from features.membership.domain.filters.membership_filters import MembershipFilters
+from features.membership.application.errors.membership_errors import (
+    MembershipNotFoundError,
+    MembershipInUseError,
+)
 
 
 class DeleteMembershipUseCase:
@@ -23,7 +27,7 @@ class DeleteMembershipUseCase:
             )
         )
         if not memberships:
-            raise ValueError("Membership not found")
+            raise MembershipNotFoundError(membership_id)
         membership = memberships[0]
 
         memberships = await self.repository.list(
@@ -33,7 +37,7 @@ class DeleteMembershipUseCase:
             )
         )
         if not memberships:
-            raise ValueError("Membership is active")
+            raise MembershipInUseError(membership_id)
 
         response = await self.repository.delete(membership)
 

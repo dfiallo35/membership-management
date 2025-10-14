@@ -8,6 +8,11 @@ from features.membership.domain.repository_interfaces.membership_repository impo
 from features.membership.domain.repository_interfaces.logging_repository import (
     ILoggingRepository,
 )
+from features.membership.application.errors.membership_errors import (
+    MembershipNotFoundError,
+    MembershipAlreadyExistsByNameError,
+    DailyMembershipExistsError,
+)
 
 
 class UpdateMembershipUseCase:
@@ -26,7 +31,7 @@ class UpdateMembershipUseCase:
             )
         )
         if not memberships:
-            raise ValueError("Membership not found")
+            raise MembershipNotFoundError(membership_id)
         membership = memberships[0]
 
         if membership_update.name and membership.name != membership_update.name:
@@ -37,7 +42,7 @@ class UpdateMembershipUseCase:
                 )
             )
             if memberships:
-                raise ValueError("Membership already exists with the same name")
+                raise MembershipAlreadyExistsByNameError(membership_update.name)
         if membership_update.duration_days == 1 and not membership.is_daily:
             memberships = await self.repository.list(
                 filters=MembershipFilters(
@@ -46,7 +51,7 @@ class UpdateMembershipUseCase:
                 )
             )
             if memberships:
-                raise ValueError("Daily membership already exists")
+                raise DailyMembershipExistsError(membership.gym_id)
 
         membership_update_dict = membership_update.model_dump(exclude_unset=True)
 

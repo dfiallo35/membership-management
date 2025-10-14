@@ -22,17 +22,20 @@ class LoggingRepositoryPostgres(ILoggingRepository):
         before_state: dict | None = None,
         after_state: dict | None = None,
     ) -> None:
-        async with self.db_connection.get_session() as session:
-            log = LoggingModel(
-                operation_id=operation_id,
-                module_id=module_id,
-                gym_id=gym_id,
-                before_state=before_state,
-                after_state=after_state,
-                description=description,
-            )
-            session.add(log)
-            await session.commit()
+        try:
+            async with self.db_connection.get_session() as session:
+                log = LoggingModel(
+                    operation_id=operation_id,
+                    module_id=module_id,
+                    gym_id=gym_id,
+                    before_state=before_state,
+                    after_state=after_state,
+                    description=description,
+                )
+                session.add(log)
+                await session.commit()
+        except Exception as e:
+            raise e
 
     async def log_addition(
         self,

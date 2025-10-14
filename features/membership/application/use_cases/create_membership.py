@@ -7,6 +7,10 @@ from features.membership.domain.repository_interfaces.membership_repository impo
 from features.membership.domain.repository_interfaces.logging_repository import (
     ILoggingRepository,
 )
+from features.membership.application.errors.membership_errors import (
+    DailyMembershipExistsError,
+    MembershipAlreadyExistsByNameError,
+)
 
 
 class CreateMembershipUseCase:
@@ -25,7 +29,7 @@ class CreateMembershipUseCase:
                 )
             )
             if memberships:
-                raise ValueError("Already exists a daily membership")
+                raise DailyMembershipExistsError(membership.gym_id)
         memberships = await self.repository.list(
             filters=MembershipFilters(
                 gym_id_eq=membership.gym_id,
@@ -33,7 +37,7 @@ class CreateMembershipUseCase:
             )
         )
         if memberships:
-            raise ValueError("Already exists a membership with the same name")
+            raise MembershipAlreadyExistsByNameError(membership.name)
 
         response = await self.repository.save(membership)
 

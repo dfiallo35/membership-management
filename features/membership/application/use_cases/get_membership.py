@@ -3,6 +3,9 @@ from features.membership.domain.repository_interfaces.membership_repository impo
     IMembershipRepository,
 )
 from features.membership.domain.entities.membership import Membership
+from features.membership.application.errors.membership_errors import (
+    MembershipNotFoundError,
+)
 
 
 class GetMembershipUseCase:
@@ -13,4 +16,6 @@ class GetMembershipUseCase:
         memberships = await self.repository.list(
             filters=MembershipFilters(id_eq=membership_id)
         )
+        if not memberships:
+            raise MembershipNotFoundError(membership_id)
         return memberships[0]

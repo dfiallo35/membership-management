@@ -6,6 +6,7 @@ from features.membership.application.dtos.membership_dtos import (
     MembershipPublic,
     MembershipUpdateRequest,
 )
+from features.membership.application.errors.membership_errors import ErrorResponse
 from features.membership.presentation.controllers.membership_controller import (
     MembershipController,
 )
@@ -16,7 +17,10 @@ router = APIRouter(prefix="/memberships", tags=["Memberships"])
 
 @router.post(
     "/",
-    response_model=None,
+    responses={
+        status.HTTP_201_CREATED: {"model": MembershipPublic},
+        status.HTTP_400_BAD_REQUEST: {"model": ErrorResponse},
+    },
     status_code=status.HTTP_201_CREATED,
 )
 async def create_membership(membership: MembershipCreateRequest):
@@ -26,7 +30,10 @@ async def create_membership(membership: MembershipCreateRequest):
 
 @router.get(
     "/daily",
-    response_model=MembershipPublic,
+    responses={
+        status.HTTP_200_OK: {"model": MembershipPublic},
+        status.HTTP_404_NOT_FOUND: {"model": ErrorResponse},
+    },
     status_code=status.HTTP_200_OK,
 )
 async def get_daily_membership():
@@ -36,7 +43,10 @@ async def get_daily_membership():
 
 @router.get(
     "/{id_membership}",
-    response_model=MembershipPublic,
+    responses={
+        status.HTTP_200_OK: {"model": MembershipPublic},
+        status.HTTP_404_NOT_FOUND: {"model": ErrorResponse},
+    },
     status_code=status.HTTP_200_OK,
 )
 async def get_membership_by_id(id_membership: str):
@@ -46,7 +56,10 @@ async def get_membership_by_id(id_membership: str):
 
 @router.get(
     "/",
-    response_model=list[MembershipPublic],
+    responses={
+        status.HTTP_200_OK: {"model": list[MembershipPublic]},
+        status.HTTP_400_BAD_REQUEST: {"model": ErrorResponse},
+    },
     status_code=status.HTTP_200_OK,
 )
 async def get_memberships():
@@ -56,7 +69,11 @@ async def get_memberships():
 
 @router.put(
     "/{id_membership}",
-    response_model=MembershipPublic,
+    responses={
+        status.HTTP_200_OK: {"model": MembershipPublic},
+        status.HTTP_400_BAD_REQUEST: {"model": ErrorResponse},
+        status.HTTP_404_NOT_FOUND: {"model": ErrorResponse},
+    },
     status_code=status.HTTP_200_OK,
 )
 async def update_membership(
@@ -68,7 +85,11 @@ async def update_membership(
 
 @router.delete(
     "/{id_membership}",
-    response_model=None,
+    responses={
+        status.HTTP_204_NO_CONTENT: {"model": None},
+        status.HTTP_400_BAD_REQUEST: {"model": ErrorResponse},
+        status.HTTP_404_NOT_FOUND: {"model": ErrorResponse},
+    },
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_membership(id_membership: str):
