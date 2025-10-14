@@ -31,3 +31,7 @@ class MembershipController:
 
     async def delete_membership(self, membership_id: str) -> None:
         return await self.service.delete_membership(membership_id)
+
+
+async def get_membership_controller():
+    return MembershipController()

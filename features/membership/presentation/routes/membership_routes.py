@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from fastapi import status
+from fastapi import Depends
 
 from features.membership.application.dtos.membership_dtos import (
     MembershipCreateRequest,
@@ -9,6 +10,7 @@ from features.membership.application.dtos.membership_dtos import (
 from features.membership.application.errors.membership_errors import ErrorResponse
 from features.membership.presentation.controllers.membership_controller import (
     MembershipController,
+    get_membership_controller,
 )
 
 
@@ -23,8 +25,10 @@ router = APIRouter(prefix="/memberships", tags=["Memberships"])
     },
     status_code=status.HTTP_201_CREATED,
 )
-async def create_membership(membership: MembershipCreateRequest):
-    controller = MembershipController()
+async def create_membership(
+    membership: MembershipCreateRequest,
+    controller: MembershipController = Depends(get_membership_controller),
+):
     return await controller.create_membership(membership)
 
 
@@ -36,8 +40,9 @@ async def create_membership(membership: MembershipCreateRequest):
     },
     status_code=status.HTTP_200_OK,
 )
-async def get_daily_membership():
-    controller = MembershipController()
+async def get_daily_membership(
+    controller: MembershipController = Depends(get_membership_controller),
+):
     return await controller.get_daily_membership()
 
 
@@ -49,8 +54,10 @@ async def get_daily_membership():
     },
     status_code=status.HTTP_200_OK,
 )
-async def get_membership_by_id(id_membership: str):
-    controller = MembershipController()
+async def get_membership_by_id(
+    id_membership: str,
+    controller: MembershipController = Depends(get_membership_controller),
+):
     return await controller.get_membership_by_id(id_membership)
 
 
@@ -62,8 +69,9 @@ async def get_membership_by_id(id_membership: str):
     },
     status_code=status.HTTP_200_OK,
 )
-async def get_memberships():
-    controller = MembershipController()
+async def get_memberships(
+    controller: MembershipController = Depends(get_membership_controller),
+):
     return await controller.get_memberships()
 
 
@@ -77,9 +85,10 @@ async def get_memberships():
     status_code=status.HTTP_200_OK,
 )
 async def update_membership(
-    membership_update: MembershipUpdateRequest, id_membership: str
+    membership_update: MembershipUpdateRequest,
+    id_membership: str,
+    controller: MembershipController = Depends(get_membership_controller),
 ):
-    controller = MembershipController()
     return await controller.update_membership(id_membership, membership_update)
 
 
@@ -92,6 +101,8 @@ async def update_membership(
     },
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_membership(id_membership: str):
-    controller = MembershipController()
+async def delete_membership(
+    id_membership: str,
+    controller: MembershipController = Depends(get_membership_controller),
+):
     return await controller.delete_membership(id_membership)
