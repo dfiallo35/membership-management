@@ -21,6 +21,24 @@
             ],
             "jinja": true,
             "justMyCode": false,
+        },
+        {
+            "name": "RUN TESTS",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceRoot}",
+            "python": "${workspaceRoot}/.venv/bin/python",
+            "envFile": "${workspaceFolder}/.env",
+            "env": {
+                "PYTHONPATH": "${workspaceRoot}"
+            },
+            "args": [
+                "tests", "-s"
+            ],
+            "jinja": true,
+            "justMyCode": false,
         }
     ]
 }
