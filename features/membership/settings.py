@@ -20,7 +20,6 @@ from features.membership.infrastructure.repositories.logging_repository_postgres
 
 class Settings(BaseSettings):
     DATABASE_URL: str
-    TEST_DATABASE_URL: str
 
     class Config:
         env_file = ".env"
