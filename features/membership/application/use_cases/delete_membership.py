@@ -36,7 +36,7 @@ class DeleteMembershipUseCase:
                 is_active=True,
             )
         )
-        if not memberships:
+        if memberships:
             raise MembershipInUseError(membership_id)
 
         response = await self.repository.delete(membership)
