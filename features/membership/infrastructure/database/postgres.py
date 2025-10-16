@@ -14,7 +14,7 @@ class DbConnection:
         if not db_url:
             raise Exception("Database URL is required")
 
-        self.engine = create_async_engine(db_url, poolclass=NullPool, echo=True)
+        self.engine = create_async_engine(db_url, poolclass=NullPool)
 
         self.session_factory = sessionmaker(
             bind=self.engine,
